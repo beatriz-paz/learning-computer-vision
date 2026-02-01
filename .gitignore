@@ -1,0 +1,18 @@
+# Ambiente virtual
+venv/
+.env/
+
+# Python
+__pycache__/
+*.pyc
+
+# PyTorch / datasets
+data/
+*.pt
+*.pth
+
+# VS Code
+.vscode/
+
+# Sistema
+.DS_Store
