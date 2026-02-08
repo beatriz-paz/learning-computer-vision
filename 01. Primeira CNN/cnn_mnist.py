@@ -90,97 +90,99 @@ class SimpleCNN(nn.Module):
 # TREINAMENTO DO MODELO
 # =====================================================
 
-# Instancia o modelo
-model = SimpleCNN()
+if __name__ == "__main__":
 
-# Função de perda:
-# CrossEntropyLoss combina LogSoftmax + NLLLoss
-criterion = nn.CrossEntropyLoss()
+    # Instancia o modelo
+    model = SimpleCNN()
 
-# Otimizador Adam para atualizar os pesos da rede
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+    # Função de perda:
+    # CrossEntropyLoss combina LogSoftmax + NLLLoss
+    criterion = nn.CrossEntropyLoss()
 
-# Número de épocas de treinamento
-epochs = 5
+    # Otimizador Adam para atualizar os pesos da rede
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-# Loop de treinamento
-for epoch in range(epochs):
-    running_loss = 0.0  # Acumula a perda da época
+    # Número de épocas de treinamento
+    epochs = 5
 
-    # Itera sobre os batches do DataLoader
-    for images, labels in train_loader:
-        # Zera os gradientes acumulados
-        optimizer.zero_grad()
+    # Loop de treinamento
+    for epoch in range(epochs):
+        running_loss = 0.0  # Acumula a perda da época
 
-        # Forward pass: calcula as saídas da rede
-        outputs = model(images)
+        # Itera sobre os batches do DataLoader
+        for images, labels in train_loader:
+            # Zera os gradientes acumulados
+            optimizer.zero_grad()
 
-        # Calcula a perda comparando saída e rótulos
-        loss = criterion(outputs, labels)
+            # Forward pass: calcula as saídas da rede
+            outputs = model(images)
 
-        # Backpropagation: calcula os gradientes
-        loss.backward()
+            # Calcula a perda comparando saída e rótulos
+            loss = criterion(outputs, labels)
 
-        # Atualiza os pesos da rede
-        optimizer.step()
+            # Backpropagation: calcula os gradientes
+            loss.backward()
 
-        # Soma a perda do batch
-        running_loss += loss.item()
+            # Atualiza os pesos da rede
+            optimizer.step()
 
-    # Exibe a perda média da época
-    print(f"Epoch {epoch+1}/{epochs} - Loss: {running_loss/len(train_loader):.4f}")
+            # Soma a perda do batch
+            running_loss += loss.item()
 
-print("Treinamento finalizado!")
+        # Exibe a perda média da época
+        print(f"Epoch {epoch+1}/{epochs} - Loss: {running_loss/len(train_loader):.4f}")
 
-# =====================================================
-# TESTE - AVALIAÇÃO DE ACURÁCIA
-# =====================================================
+    print("Treinamento finalizado!")
 
-# Carrega o conjunto de teste do MNIST
-test_dataset = datasets.MNIST(
-    root="./data",
-    train=False,          # Indica conjunto de teste
-    download=True,
-    transform=transform
-)
+    # =====================================================
+    # TESTE - AVALIAÇÃO DE ACURÁCIA
+    # =====================================================
 
-# DataLoader para o conjunto de teste
-test_loader = torch.utils.data.DataLoader(
-    test_dataset,
-    batch_size=64,
-    shuffle=False         # Não precisa embaralhar no teste
-)
+    # Carrega o conjunto de teste do MNIST
+    test_dataset = datasets.MNIST(
+        root="./data",
+        train=False,          # Indica conjunto de teste
+        download=True,
+        transform=transform
+    )
 
-# Coloca o modelo em modo avaliação
-# Desativa comportamentos como dropout e batchnorm
-model.eval()
+    # DataLoader para o conjunto de teste
+    test_loader = torch.utils.data.DataLoader(
+        test_dataset,
+        batch_size=64,
+        shuffle=False         # Não precisa embaralhar no teste
+    )
 
-correct = 0  # Número de previsões corretas
-total = 0    # Total de amostras avaliadas
+    # Coloca o modelo em modo avaliação
+    # Desativa comportamentos como dropout e batchnorm
+    model.eval()
 
-# Desativa o cálculo de gradientes (economiza memória)
-with torch.no_grad():
-    for images, labels in test_loader:
-        # Forward pass
-        outputs = model(images)
+    correct = 0  # Número de previsões corretas
+    total = 0    # Total de amostras avaliadas
 
-        # Obtém a classe com maior probabilidade
-        _, predicted = torch.max(outputs, 1)
+    # Desativa o cálculo de gradientes (economiza memória)
+    with torch.no_grad():
+        for images, labels in test_loader:
+            # Forward pass
+            outputs = model(images)
 
-        # Atualiza o total de amostras
-        total += labels.size(0)
+            # Obtém a classe com maior probabilidade
+            _, predicted = torch.max(outputs, 1)
 
-        # Conta quantas previsões estão corretas
-        correct += (predicted == labels).sum().item()
+            # Atualiza o total de amostras
+            total += labels.size(0)
 
-# Calcula a acurácia em porcentagem
-accuracy = 100 * correct / total
-print(f"Acurácia no teste: {accuracy:.2f}%")
+            # Conta quantas previsões estão corretas
+            correct += (predicted == labels).sum().item()
 
-# =====================================================
-# SALVAMENTO DO MODELO
-# =====================================================
+    # Calcula a acurácia em porcentagem
+    accuracy = 100 * correct / total
+    print(f"Acurácia no teste: {accuracy:.2f}%")
 
-# Salva apenas os pesos treinados da rede
-torch.save(model.state_dict(), "cnn_mnist.pth")
-print("Modelo salvo em cnn_mnist.pth")
+    # =====================================================
+    # SALVAMENTO DO MODELO
+    # =====================================================
+
+    # Salva apenas os pesos treinados da rede
+    torch.save(model.state_dict(), "cnn_mnist.pth")
+    print("Modelo salvo em cnn_mnist.pth")

@@ -54,20 +54,13 @@ O treinamento é realizado utilizando a função de perda CrossEntropyLoss e o o
 
 ## CNN Wavelet
 
+No programa python chamado __cnn_wave_mnist.py__ temos a arquitetura proposta que utiliza uma camada wavelet fixa como primeira etapa do processamento, substituindo a convolução inicial tradicional. Essa camada aplica a Transformada Wavelet Discreta 2D do tipo Haar, decompondo a imagem de entrada em quatro sub-bandas (LL, LH, HL e HH), que representam informações de aproximação e detalhes em diferentes direções, além de realizar a redução da resolução espacial.
+
+As sub-bandas geradas são então processadas por uma CNN convencional, composta por camadas convolucionais, pooling e camadas totalmente conectadas, responsáveis pela extração de características de alto nível e pela classificação final dos dígitos do conjunto MNIST. O treinamento é supervisionado, utilizando a função de perda Cross-Entropy e o otimizador Adam, mantendo a camada wavelet com filtros fixos.
+
 ```
 Imagem → Wavelet Decomposition → CNN → Classificador
 (backprop passa por tudo)
 ```
 
-DESCREVER O CÓDIGO
 
-
-## Resultado 
-
-### CNN Simples:
-
-Quando rodamos o programa de teste carregando a imagem do número 6, que está com o dígito bem centralizado e com as bordas grossas, conforme o dataset original, isso faz com que a CNN reconheça os padrões e acerte o valor de entrada.
-
-Agora quando testamos inserido na entrada o número 2, ela erra, devido a imagem não parecer com o dataset, pois tem traços mais finos (apenas contorno), isso porque o dataset MNIST não generaliza bem para escrita livre.
-
-### CNN Wavelet:
