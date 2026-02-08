@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
+from visualizar_wavelet import plot_wavelet_subbands
 from torchvision import datasets, transforms
 from wavelet_layer import WaveletLayer  # Camada wavelet personalizada
 
@@ -150,6 +151,17 @@ if __name__ == "__main__":
 
         avg_loss = running_loss / len(train_loader)
         print(f"Epoch [{epoch+1}/{epochs}] - Loss: {avg_loss:.4f}")
+    
+        # ==========================================
+        # VISUALIZAÇÃO DAS SUB-BANDAS (UMA VEZ)
+        # ==========================================
+        if epoch == 0:
+            sample = images[0:1]  # pega 1 imagem do último batch
+
+            with torch.no_grad():
+                wavelet_out = model.wavelet(sample)
+
+            plot_wavelet_subbands(wavelet_out)
 
     print("Treinamento finalizado!")
 
