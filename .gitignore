@@ -1,0 +1,13 @@
+# ambiente virtual
+vit-env/
+venv/
+env/
+
+# python
+__pycache__/
+*.pyc
+
+# datasets grandes
+*.tgz
+*.zip
+*.tar
